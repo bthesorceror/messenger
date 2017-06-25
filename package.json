@@ -4,14 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test npm run migrate && NODE_ENV=test mocha test/**/*_test.js",
+    "seed": "gulp users:import",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
+    "gulp": "^3.9.1",
+    "knex": "^0.13.0",
+    "pg": "^6.4.0",
     "pug": "^2.0.0-rc.2"
+  },
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "mocha": "^3.4.2"
   }
 }
