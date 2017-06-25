@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title Messenger
+
+  body
+    header
+      h1 Messenger
+      block header
+        if user
+          span=user.username
+        else
+          span
+            a(href="/login") Login
+    #content
+      block content

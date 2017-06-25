@@ -13,6 +13,19 @@ describe('User', () => {
     return cleanDatabase()
   })
 
+  describe('.findById', () => {
+    it('returns user by id', (done) => {
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.findByUsername('user')
+      }).then((user) => {
+        return User.findById(user.id)
+      }).then((user) => {
+        expect(user.username).toEqual('user')
+        done()
+      }).catch(done)
+    })
+  })
+
   describe('.authenticate', () => {
     it('returns user with username and password match', (done) => {
       User.create({username: 'user', password: 'password'}).then(() => {

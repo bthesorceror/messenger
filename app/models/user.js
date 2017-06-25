@@ -6,7 +6,15 @@ class User {
     return database
       .select('*')
       .from('users')
-      .where({username: username})
+      .where({ username: username })
+      .first()
+  }
+
+  static findById (id) {
+    return database
+      .select('*')
+      .from('users')
+      .where({ id: id })
       .first()
   }
 
