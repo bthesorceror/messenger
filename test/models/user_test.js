@@ -13,6 +13,35 @@ describe('User', () => {
     return cleanDatabase()
   })
 
+  describe('.authenticate', () => {
+    it('returns user with username and password match', (done) => {
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.authenticate('user', 'password')
+      }).then((user) => {
+        expect(user.username).toEqual('user')
+        done()
+      })
+    })
+
+    it('returns false with username and password do not match', (done) => {
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.authenticate('user', 'password1')
+      }).then((user) => {
+        expect(user).toEqual(false)
+        done()
+      })
+    })
+
+    it('returns false with user does not exist', (done) => {
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.authenticate('user1', 'password')
+      }).then((user) => {
+        expect(user).toEqual(false)
+        done()
+      })
+    })
+  })
+
   describe('.create', () => {
     it('returns an error when there is no username', (done) => {
       User.create({}).catch((err) => {
@@ -22,15 +51,15 @@ describe('User', () => {
     })
 
     it('returns an error when there is no username', (done) => {
-      User.create({username: 'Henry'}).catch((err) => {
+      User.create({username: 'user'}).catch((err) => {
         expect(err.message).toEqual('Password must be provided')
         done()
       })
     })
 
     it('returns an error if user already exists', (done) => {
-      User.create({username: 'bob', password: 'password'}).then(() => {
-        return User.create({username: 'bob', password: 'password'})
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.create({username: 'user', password: 'password'})
       }).catch((err) => {
         expect(err.message).toEqual('User already exists')
         done()
@@ -38,10 +67,10 @@ describe('User', () => {
     })
 
     it('creates a new user', (done) => {
-      User.create({username: 'bob', password: 'password'}).then(() => {
-        return User.findByUsername('bob')
+      User.create({username: 'user', password: 'password'}).then(() => {
+        return User.findByUsername('user')
       }).then((user) => {
-        expect(user.username).toEqual('bob')
+        expect(user.username).toEqual('user')
         done()
       }).catch(done)
     })
