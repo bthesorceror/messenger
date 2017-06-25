@@ -34,10 +34,15 @@ module.exports = function (app) {
     res.render('login')
   })
 
+  app.get('/logout', (req, res) => {
+    req.logout()
+    res.redirect('/')
+  })
+
   app.post(
     '/login',
-    passport.authenticate('local', { failureRedirect: '/login' }),
-    (req, res) => {
-      res.redirect('/')
-    })
+    passport.authenticate('local', {
+      failureRedirect: '/login',
+      successRedirect: '/'
+    }))
 }

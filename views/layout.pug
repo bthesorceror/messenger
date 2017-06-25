@@ -8,7 +8,9 @@ html
       h1 Messenger
       block header
         if user
-          span=user.username
+          span
+            =user.username
+            a(href="/logout") Logout
         else
           span
             a(href="/login") Login
