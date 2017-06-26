@@ -7,14 +7,19 @@
     "test": "NODE_ENV=test npm run migrate && NODE_ENV=test mocha test/**/*_test.js",
     "seed": "gulp users:import",
     "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback"
+    "rollback": "knex migrate:rollback",
+    "build-client": "browserify client/app.js -o public/app.bundle.js -t [babelify --presets [es2015]]",
+    "watch-client": "watchify client/app.js -o public/app.bundle.js -t [babelify --presets [es2015]]"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
+    "browserify": "^14.4.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
@@ -23,10 +28,13 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg": "^6.4.0",
-    "pug": "^2.0.0-rc.2"
+    "pug": "^2.0.0-rc.2",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
     "expect": "^1.20.2",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "watchify": "^3.9.0"
   }
 }
