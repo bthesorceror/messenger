@@ -12,6 +12,14 @@ class MessageStore extends EventEmitter {
     return _.keys(this.messages)
   }
 
+  getMessages (username) {
+    if (!username) {
+      return []
+    }
+
+    return this.messages[username] || []
+  }
+
   attachEvents () {
     this.client = require('socket.io-client')()
 

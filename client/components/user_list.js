@@ -19,6 +19,12 @@ class UserList extends React.Component {
     this.setState({ usernames: MessageStore.getUserNames() })
   }
 
+  unbindEvents () {
+    if (this.handler) {
+      MessageStore.removeListener('changed', this.handler)
+    }
+  }
+
   bindEvents () {
     this.handler = this.onStoreChange.bind(this)
     MessageStore.on('changed', this.handler)
