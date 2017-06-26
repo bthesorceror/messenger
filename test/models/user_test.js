@@ -5,7 +5,7 @@ const User = require('../../app/models/user')
 const database = require('../../app/models/database')
 
 function cleanDatabase () {
-  return database('users').truncate()
+  return database.raw('TRUNCATE users, messages CASCADE')
 }
 
 describe('User', () => {
