@@ -8,6 +8,14 @@ const bodyParser = require('body-parser')
 const passport = require('./passport')
 const User = require('./app/models/user')
 
+function requireUser (req, res, next) {
+  if (!req.user) {
+    return res.redirect('/')
+  }
+
+  next()
+}
+
 let app = express()
 
 app.use('/public', express.static('public'))
@@ -32,7 +40,7 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
-app.get('/app', (req, res) => {
+app.get('/app', requireUser, (req, res) => {
   res.render('app')
 })
 
