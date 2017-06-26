@@ -2,7 +2,7 @@ const _ = require('lodash')
 const database = require('./database')
 
 class Message {
-  static findAllByUser (toUser) {
+  static findAllByUser (user) {
     return database
       .select(
         'messages.*',
@@ -12,7 +12,8 @@ class Message {
       .innerJoin('users AS f', 'f.id', 'messages.from_id')
       .innerJoin('users AS t', 't.id', 'messages.to_id')
       .from('messages')
-      .where({ to_id: toUser.id })
+      .where({ to_id: user.id })
+      .orWhere({ from_id: user.id })
       .orderBy('messages.created_at')
   }
 

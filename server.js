@@ -54,7 +54,14 @@ app.get('/api/usernames', requireUser, (req, res) => {
 
 app.get('/api/messages', requireUser, (req, res) => {
   Message.findAllByUser(req.user).then((messages) => {
-    let grouped = _.groupBy(messages, 'from')
+    let grouped = _.groupBy(messages, (message) => {
+      if (message.to_id === req.user.id) {
+        return message.from
+      } else {
+        return message.to
+      }
+    })
+
     res.json({ messages: grouped })
   }).catch(() => {
     res.status(500).json({ error: 'An error has occurred' })
