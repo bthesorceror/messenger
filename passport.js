@@ -43,6 +43,6 @@ module.exports = function (app) {
     '/login',
     passport.authenticate('local', {
       failureRedirect: '/login',
-      successRedirect: '/'
+      successRedirect: '/app'
     }))
 }

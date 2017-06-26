@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const passport = require('./passport')
 const User = require('./app/models/user')
 const Message = require('./app/models/message')
+const Dispatcher = require('./app/lib/dispatcher')
 
 let app = express()
 let server = http.Server(app)
@@ -30,10 +31,9 @@ function requireUser (req, res, next) {
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views'))
 
+app.use(sessions)
 app.use('/public', express.static('public'))
 app.use('/api', bodyParser.json())
-app.use('/api', requireUser)
-app.use(sessions)
 app.use(bodyParser.urlencoded({ extended: false }))
 
 passport(app)
@@ -44,7 +44,7 @@ app.get('/app', requireUser, (req, res) => {
   res.render('app')
 })
 
-app.get('/api/usernames', (req, res) => {
+app.get('/api/usernames', requireUser, (req, res) => {
   User.findAllUsernames().then((usernames) => {
     res.json({ usernames: usernames })
   }).catch(() => {
@@ -52,7 +52,7 @@ app.get('/api/usernames', (req, res) => {
   })
 })
 
-app.get('/api/messages', (req, res) => {
+app.get('/api/messages', requireUser, (req, res) => {
   Message.findAllByUser(req.user).then((messages) => {
     let grouped = _.groupBy(messages, 'from')
     res.json({ messages: grouped })
@@ -61,7 +61,7 @@ app.get('/api/messages', (req, res) => {
   })
 })
 
-app.post('/api/messages', (req, res) => {
+app.post('/api/messages', requireUser, (req, res) => {
   let receipent
   let to = req.body.to
   let text = req.body.text
@@ -86,7 +86,8 @@ app.post('/api/messages', (req, res) => {
       text: text
     })
   }).then(() => {
-    // Dispatch Message
+    return Dispatcher.dispatch(req.user, receipent, text)
+  }).then(() => {
     res.status(201).end()
   }).catch(() => {
     res.status(500).json({ error: 'An error has occurred' })
@@ -100,7 +101,7 @@ io.use((socket, next) => {
 io.use((socket, next) => {
   let id = _.get(socket.request.session, 'passport.user')
 
-  if (!id) { return next() }
+  if (!id) { return next(new Error('User must be logged in')) }
 
   User.findById(id).then(function (user) {
     socket.user = user
@@ -110,7 +111,14 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   console.log('Connected')
-  console.dir(socket.user)
+
+  let channel = Dispatcher.createChannel(socket.user.id)
+
+  channel.on('message', (message) => {
+    socket.emit('message', message)
+  })
+
+  socket.on('close', channel.destroy.bind(channel))
 })
 
 module.exports = server
