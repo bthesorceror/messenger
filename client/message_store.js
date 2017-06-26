@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const axios = require('axios')
 const EventEmitter = require('events').EventEmitter
 
@@ -5,6 +6,10 @@ class MessageStore extends EventEmitter {
   constructor () {
     super()
     this.messages = {}
+  }
+
+  getUserNames () {
+    return _.keys(this.messages)
   }
 
   attachEvents () {
