@@ -24,17 +24,22 @@ class MessageStore extends EventEmitter {
     this.client = require('socket.io-client')()
 
     this.client.on('message', (message) => {
-      if (!this.messages[message.from]) {
-        this.messages[message.from] = []
+      if (!this.messages[message.key]) {
+        this.messages[message.key] = []
       }
 
-      this.messages[message.from].push(message)
+      this.messages[message.key].push(message)
 
       this.emit('changed')
     })
   }
 
   postMessage (to, text) {
+    if (!this.messages[to]) {
+      this.messages[to] = []
+      this.emit('changed')
+    }
+
     axios.post('/api/messages', {
       to: to,
       text: text

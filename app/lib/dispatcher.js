@@ -6,16 +6,30 @@ class Dispatcher {
   }
 
   async dispatch (from, to, text) {
-    let payload = {
+    let payload1 = {
       from: from.username,
       from_id: from.id,
       to: to.username,
       to_id: to.id,
-      text: text
+      text: text,
+      key: from.username
+    }
+
+    let payload2 = {
+      from: from.username,
+      from_id: from.id,
+      to: to.username,
+      to_id: to.id,
+      text: text,
+      key: to.username
     }
 
     ;(this.channels[to.id] || []).forEach((channel) => {
-      channel.emit('message', payload)
+      channel.emit('message', payload1)
+    })
+
+    ;(this.channels[from.id] || []).forEach((channel) => {
+      channel.emit('message', payload2)
     })
   }
 
