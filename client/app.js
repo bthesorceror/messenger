@@ -10,9 +10,5 @@ domready(() => {
       document.querySelector('#content')
   )
 
-  MessageStore.on('changed', () => {
-    console.dir(MessageStore.messages)
-  })
-
   MessageStore.initialize()
 })
