@@ -13,6 +13,28 @@ describe('User', () => {
     return cleanDatabase()
   })
 
+  describe('.findAllUsernames', () => {
+    it('returns all usernames', (done) => {
+      Promise.all([
+        User.create({
+          username: 'user1',
+          password: 'password'
+        }),
+        User.create({
+          username: 'user2',
+          password: 'password'
+        })
+      ]).then(() => {
+        return User.findAllUsernames()
+      }).then((usernames) => {
+        expect(usernames.length).toEqual(2)
+        expect(usernames).toInclude('user1')
+        expect(usernames).toInclude('user2')
+        done()
+      }).catch(done)
+    })
+  })
+
   describe('.findById', () => {
     it('returns user by id', (done) => {
       User.create({username: 'user', password: 'password'}).then(() => {

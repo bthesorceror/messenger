@@ -44,6 +44,14 @@ app.get('/app', requireUser, (req, res) => {
   res.render('app')
 })
 
+app.get('/api/usernames', requireUser, (req, res) => {
+  User.findAllUsernames().then((usernames) => {
+    res.json({ usernames: usernames })
+  }).catch(() => {
+    res.status(500).json({ error: 'An error has occurred' })
+  })
+})
+
 let server = http.Server(app)
 let io = socketio(server)
 

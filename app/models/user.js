@@ -18,6 +18,12 @@ class User {
       .first()
   }
 
+  static findAllUsernames () {
+    return database
+      .table('users')
+      .pluck('username')
+  }
+
   static async hashPassword (password) {
     return bcrypt.hash(password, 10)
   }
